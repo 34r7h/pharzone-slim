@@ -185,7 +185,7 @@
 				caption: 'Adjust your shopping cart before checking out.',
 				summery: 'This shopping cart has all the items ready for purchase',
 				tHead: {
-					'name':{type: 'button', width:'38%', action:methods.checkout, actionName: 'Checkout Now'},
+					'name':{type: 'string', width:'38%', action:methods.checkout, actionName: 'Checkout Now'},
 					'price':{type:'string', width:'20%'},
 					'qty':{type:'string', width:'10%'},
 					'total':{type:'string', width:'10%'}},

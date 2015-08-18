@@ -10,13 +10,14 @@
             ]">
         <thead>
         <tr>
+            <th width="5%"><input type="checkbox"/></th>
             <th ng-repeat="(key, th) in model.tHead" width="{{th.width}}">
                 <span ng-hide="up" ng-click="$parent.orderBy = key; up = !up">
                 <i class="fa fa-caret-down"> {{key}}
                 </i>
                 </span>
                 <span ng-show="up" ng-click="$parent.orderBy = '-'+key; up = !up">
-                    <i class="fa fa-caret-up> {{key}}
+                    <i class="fa fa-caret-up"> {{key}}
                     </i>
                 </span>
                 <span ng-if="th.type === 'button'">
@@ -28,6 +29,7 @@
 
         <tfoot>
             <tr>
+                <td><input type="checkbox"/></td>
                 <td ng-repeat="(key, footer) in model.tFoot"
                         colspan="{{footer.colspan}}">
                     <div ng-if="footer.type==='string'">
@@ -45,6 +47,7 @@
 
         <tbody>
             <tr ng-repeat="(key,data) in dummyCart | orderBy:orderBy">
+                <td><input type="checkbox"/></td>
                 <td ng-repeat="val in data">
                     {{val}}
                 </td>
