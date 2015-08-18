@@ -71,6 +71,14 @@
 					console.log(key, arg);
 				});
 			};
+			methods.total = (args) => {
+				console.log('checking total..');
+				var total = 0;
+				angular.forEach(args, (arg) => {
+					total += arg.total;
+				});
+				return total;
+			};
 			this.methods = methods;
 
 			/**/
@@ -176,9 +184,13 @@
 				type: 'basic',
 				caption: 'Adjust your shopping cart before checking out.',
 				summery: 'This shopping cart has all the items ready for purchase',
-				thead: ['name', 'qty', 'price', 'total'],
-				name: 'cart',
-				action: methods.checkout
+				tHead: {
+					'name':{type: 'button', width:'38%', action:methods.checkout, actionName: 'Checkout Now'},
+					'price':{type:'string', width:'20%'},
+					'qty':{type:'string', width:'10%'},
+					'total':{type:'string', width:'10%'}},
+				tFoot: {'default':{type:'string', value:'Observe your total and proceed to checkout.', colspan:2},'checkout':{type:'button', action: methods.checkout},'gTotal':{type:'watcher', action: methods.total}},
+				name: 'cart'
 			};
 			this.models = models;
 		}

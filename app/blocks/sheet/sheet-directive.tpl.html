@@ -1,35 +1,52 @@
 <div class="">{{sheet.name}}
+<!--
     {{model}}
+-->
     <table class="columns small-12"
             ng-init="dummyCart = [
-                {name:'coke', qty:'321', 'price':21, total:6741},
-                {name:'weed', qty:'34', 'price':12, total:408},
-                {name:'aya', qty:'64', 'price':49, total: 3136}
+                {name:'coke', price:21, qty:321, total:6741},
+                {name:'weed', price:12, qty:34, total:408},
+                {name:'aya', price:49, qty:64, total: 3136}
             ]">
         <thead>
         <tr>
-            <th ng-repeat="th in model.thead" >
-                <div ng-hide="up" ng-click="$parent.orderBy = th; up = !up">
-                    <a href>{{th}}
-                    <i ng-if="$parent.$parent.orderBy===th" class="fa fa-caret-down"></i></a></div>
-                <div ng-show="up" ng-click="$parent.orderBy = '-'+th; up = !up">
-                    <a href>{{th}}
-                    <i ng-if="$parent.$parent.orderBy===('-'+th )" class="fa fa-caret-up"></i></a></div>
+            <th ng-repeat="(key, th) in model.tHead" width="{{th.width}}">
+                <span ng-hide="up" ng-click="$parent.orderBy = key; up = !up">
+                <i class="fa fa-caret-down"> {{key}}
+                </i>
+                </span>
+                <span ng-show="up" ng-click="$parent.orderBy = '-'+key; up = !up">
+                    <i class="fa fa-caret-up> {{key}}
+                    </i>
+                </span>
+                <span ng-if="th.type === 'button'">
+                    <a href="" class="button" ng-click="th.action(dummyCart)">{{th.actionName}}</a>
+                </span>
             </th>
         </tr>
         </thead>
+
         <tfoot>
             <tr>
-                <td ng-repeat="item in dummyCart[0]" ng-if="$index>1"></td>
-                <td><a class="button" ng-click="model.action(dummyCart)">Touch</a></td>
-                <td ng-init="total = 0"><b>{{total}}</b></td>
+                <td ng-repeat="(key, footer) in model.tFoot"
+                        colspan="{{footer.colspan}}">
+                    <div ng-if="footer.type==='string'">
+                        {{footer.value}}
+                    </div>
+                    <div ng-if="footer.type==='button'">
+                        <button ng-click="footer.action(dummyCart)">{{key}}</button>
+                    </div>
+                    <div ng-if="footer.type==='watcher'">
+                        <b>{{footer.action(dummyCart)}}</b>
+                    </div>
+                </td>
             </tr>
         </tfoot>
+
         <tbody>
             <tr ng-repeat="(key,data) in dummyCart | orderBy:orderBy">
                 <td ng-repeat="val in data">
                     {{val}}
-                    <div ng-if="key === 'total'" ng-init="$parent.$parent.$parent.total = $parent.$parent.$parent.total + val"></div>
                 </td>
             </tr>
         </tbody>

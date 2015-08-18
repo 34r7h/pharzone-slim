@@ -35,14 +35,14 @@
         vm.objKey = (obj) => {
           var key = Object.keys(obj);
           return key[0];
-        }
+        };
       },
       link(scope, element, attrs) {
         /* jshint unused:false */
         console.log(attrs.sheet);
         scope.model = Api.models[attrs.sheet];
         console.log(scope.model, element);
-        //element.DataTable();
+        // element.DataTable();
         /* eslint "no-unused-vars": [2, {"args": "none"}] */
       }
     };
