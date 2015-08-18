@@ -1,0 +1,67 @@
+<div class="">{{sheet.name}}
+    {{model}}
+    <table class="columns small-12">
+        <thead>
+        <tr>
+            <th width="25%">
+                {{model.name}}
+            </th>
+            <th width="75%">
+                Data
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>test</td>
+                <td>The data.</td>
+            </tr>
+            <tr>
+                <td>2nd test</td>
+                <td>The other data.</td>
+            </tr>
+        </tbody>
+        <tr>
+            <td width="100%"><button class="button">Touch</button></td>
+        </tr>
+    </table>
+
+
+
+    <table
+            class="columns small-12"
+            ng-init="dummy = {
+        caption: 'Cute Animals Per 1,000 People',
+        thead: ['state','dogs', 'cats', 'rabbits'],
+        list2: [
+            {
+                name: 'new york',
+                data: [
+                    {dogs:3},
+                    {cats: 1},
+                    {rabbits:4}
+                ]
+            },
+            {
+                name: 'california',
+                data: [
+                    {dogs:6},
+                    {cats: 3},
+                    {rabbits:9}
+                ]
+            }
+        ]
+    }">
+        <caption>{{dummy.caption}}</caption>
+        <tr>
+            <th ng-repeat="th in dummy.thead" id="{{th}}">
+                <a href="" ng-click="$parent.orderBy = th">{{th}}</a>
+            </th>
+        </tr>
+        <tr ng-repeat="(listKey, listee) in dummy.list  | orderBy:'listKey'">
+            <th id="{{listKey}}" headers="{{listKey}}">{{listKey}}</th>
+            <td ng-repeat="(listeeKey, item) in listee" headers="{{listKey}} {{listeeKey}} {{listeeKey}}">{{item}}</td>
+        </tr>
+    </table>
+
+</div>
