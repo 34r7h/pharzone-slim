@@ -173,7 +173,12 @@
 			// Shop
 
 			models.cart = {
-				name: 'cat'
+				type: 'basic',
+				caption: 'Adjust your shopping cart before checking out.',
+				summery: 'This shopping cart has all the items ready for purchase',
+				thead: ['name', 'qty', 'price', 'total'],
+				name: 'cart',
+				action: methods.checkout
 			};
 			this.models = models;
 		}

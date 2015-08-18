@@ -1,39 +1,49 @@
 <div class="">{{sheet.name}}
     {{model}}
-    <table class="columns small-12">
+    <table class="columns small-12"
+            ng-init="dummyCart = [
+                {name:'coke', qty:'321', 'price':21, total:6741},
+                {name:'weed', qty:'34', 'price':12, total:408},
+                {name:'aya', qty:'64', 'price':49, total: 3136}
+            ]">
         <thead>
         <tr>
-            <th width="25%">
-                {{model.name}}
-            </th>
-            <th width="75%">
-                Data
+            <th ng-repeat="th in model.thead" >
+                <div ng-hide="up" ng-click="$parent.orderBy = th; up = !up">
+                    <a href>{{th}}
+                    <i ng-if="$parent.$parent.orderBy===th" class="fa fa-caret-down"></i></a></div>
+                <div ng-show="up" ng-click="$parent.orderBy = '-'+th; up = !up">
+                    <a href>{{th}}
+                    <i ng-if="$parent.$parent.orderBy===('-'+th )" class="fa fa-caret-up"></i></a></div>
             </th>
         </tr>
         </thead>
-        <tbody>
+        <tfoot>
             <tr>
-                <td>test</td>
-                <td>The data.</td>
+                <td ng-repeat="item in dummyCart[0]" ng-if="$index>1"></td>
+                <td><a class="button" ng-click="model.action(dummyCart)">Touch</a></td>
+                <td ng-init="total = 0"><b>{{total}}</b></td>
             </tr>
-            <tr>
-                <td>2nd test</td>
-                <td>The other data.</td>
+        </tfoot>
+        <tbody>
+            <tr ng-repeat="(key,data) in dummyCart | orderBy:orderBy">
+                <td ng-repeat="val in data">
+                    {{val}}
+                    <div ng-if="key === 'total'" ng-init="$parent.$parent.$parent.total = $parent.$parent.$parent.total + val"></div>
+                </td>
             </tr>
         </tbody>
-        <tr>
-            <td width="100%"><button class="button">Touch</button></td>
-        </tr>
+
     </table>
 
 
 
-    <table
+    <!--<table
             class="columns small-12"
             ng-init="dummy = {
         caption: 'Cute Animals Per 1,000 People',
         thead: ['state','dogs', 'cats', 'rabbits'],
-        list2: [
+        list: [
             {
                 name: 'new york',
                 data: [
@@ -51,30 +61,21 @@
                 ]
             }
 
-        ],
-        list: {
-            'new-york': {
-                dogs: 3,
-                cats: 1,
-                rabbits: 4
-            },
-            'california': {
-                dogs: 5,
-                cats: 2,
-                rabbits: 7
-            }
-        }
-    }">
+        ]
+    }">-->
+    <!--<table class="columns small-12">
         <caption>{{dummy.caption}}</caption>
         <tr>
             <th ng-repeat="th in dummy.thead" id="{{th}}">
                 <a href="" ng-click="$parent.orderBy = th">{{th}}</a>
             </th>
         </tr>
-        <tr ng-repeat="(listKey, listee) in dummy.list  | orderBy:'listKey'">
-            <th id="{{listKey}}" headers="{{listKey}}">{{listKey}}</th>
-            <td ng-repeat="(listeeKey, item) in listee" headers="{{listKey}} {{listeeKey}} {{listeeKey}}">{{item}}</td>
+        <tr ng-repeat="listee in dummy.list  | orderBy:'-$parent.orderBy'">
+            <th id="{{listee.name}}" headers="{{listee.name}}">{{listee.name}}</th>
+            <td ng-repeat="item in listee.data" headers="{{$parent.listee.name}} {{sheet.objKey(item)}}">
+                {{item[sheet.objKey(item)]}}
+            </td>
         </tr>
-    </table>
+    </table>-->
 
 </div>

@@ -32,6 +32,10 @@
         let vm = this;
         vm.name = 'sheet';
         vm.models = Api.models;
+        vm.objKey = (obj) => {
+          var key = Object.keys(obj);
+          return key[0];
+        }
       },
       link(scope, element, attrs) {
         /* jshint unused:false */
