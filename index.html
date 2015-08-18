@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang='en' data-ng-app='pharzone'>
+  <head>
+    <title>pharzone</title>
+    <meta name='viewport' content='width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes'>
+    <!-- inject:head:js -->
+    <!-- endinject -->
+    <!-- inject:html -->
+    <!-- endinject -->
+    <!-- bower:css -->
+    <link rel="stylesheet" href="vendor/font-awesome/css/font-awesome.css">
+    <link rel="stylesheet" href="vendor/foundation/css/foundation.css">
+    <!-- endbower -->
+    <!-- inject:css -->
+    <!-- endinject -->
+  </head>
+  <body>
+
+    <div data-top-bar>
+      <ul class='title-area'>
+        <li class='name'>
+          <h1>
+            <a href='#/'>pharzone</a>
+          </h1>
+        </li>
+        <li class='menu-icon' data-toggle-top-bar>
+          <a href='#/'>
+            <span></span>
+          </a>
+        </li>
+      </ul>
+
+      <div data-top-bar-section>
+        <ul class='left'>
+          <li data-ui-sref-active='active'>
+            <a data-ui-sref='pharzone'>Home</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="row" data-ui-view>
+
+    </div>
+
+    <!-- bower:js -->
+    <script src="vendor/modernizr/modernizr.js"></script>
+    <script src="vendor/jquery/dist/jquery.js"></script>
+    <script src="vendor/angular/angular.js"></script>
+    <script src="vendor/firebase/firebase.js"></script>
+    <script src="vendor/angularfire/dist/angularfire.js"></script>
+    <script src="vendor/angular-foundation/mm-foundation-tpls.js"></script>
+    <script src="vendor/angular-messages/angular-messages.js"></script>
+    <script src="vendor/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="vendor/fastclick/lib/fastclick.js"></script>
+    <script src="vendor/jquery.cookie/jquery.cookie.js"></script>
+    <script src="vendor/jquery-placeholder/jquery.placeholder.js"></script>
+    <script src="vendor/foundation/js/foundation.js"></script>
+    <!-- endbower -->
+    <!-- inject:js -->
+    <script src="js/app-module.js"></script>
+    <script src="js/components/shop/shop-directive.js"></script>
+    <script src="js/components/orders/orders-directive.js"></script>
+    <script src="js/components/products/products-directive.js"></script>
+    <script src="js/components/create/create-directive.js"></script>
+    <script src="js/components/cart/cart-directive.js"></script>
+    <script src="js/components/auth/auth-directive.js"></script>
+    <script src="js/blocks/sheet/sheet-directive.js"></script>
+    <script src="js/blocks/list/list-directive.js"></script>
+    <script src="js/blocks/content/content-directive.js"></script>
+    <script src="js/blocks/chit/chit-directive.js"></script>
+    <script src="js/services/api-service.js"></script>
+    <script src="js/controllers/pharzone-controller.js"></script>
+    <script src="js/app-routes.js"></script>
+    <!-- endinject -->
+  </body>
+</html>
