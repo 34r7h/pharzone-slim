@@ -1,0 +1,101 @@
+<div class="">{{sheet.name}}
+<!--
+    {{model}}
+-->
+    <table class="columns small-12"
+            ng-init="dummyCart = [
+                {name:'coke', price:21, qty:321, total:6741},
+                {name:'weed', price:12, qty:34, total:408},
+                {name:'aya', price:49, qty:64, total: 3136}
+            ]">
+        <thead>
+        <tr>
+            <th width="5%"><input type="checkbox"/></th>
+            <th ng-repeat="(key, th) in model.tHead" width="{{th.width}}">
+                <span ng-hide="up" ng-click="$parent.orderBy = key; up = !up">
+                <i class="fa fa-caret-down"> {{key}}
+                </i>
+                </span>
+                <span ng-show="up" ng-click="$parent.orderBy = '-'+key; up = !up">
+                    <i class="fa fa-caret-up"> {{key}}
+                    </i>
+                </span>
+                <span ng-if="th.type === 'button'">
+                    <a href="" class="button" ng-click="th.action(dummyCart)">{{th.actionName}}</a>
+                </span>
+            </th>
+        </tr>
+        </thead>
+
+        <tfoot>
+            <tr>
+                <td><input type="checkbox"/></td>
+                <td ng-repeat="(key, footer) in model.tFoot"
+                        colspan="{{footer.colspan}}">
+                    <div ng-if="footer.type==='string'">
+                        {{footer.value}}
+                    </div>
+                    <div ng-if="footer.type==='button'">
+                        <button ng-click="footer.action(dummyCart)">{{key}}</button>
+                    </div>
+                    <div ng-if="footer.type==='watcher'">
+                        <b>{{footer.action(dummyCart)}}</b>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+
+        <tbody>
+            <tr ng-repeat="(key,data) in dummyCart | orderBy:orderBy">
+                <td><input type="checkbox"/></td>
+                <td ng-repeat="val in data">
+                    {{val}}
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+
+
+
+    <!--<table
+            class="columns small-12"
+            ng-init="dummy = {
+        caption: 'Cute Animals Per 1,000 People',
+        thead: ['state','dogs', 'cats', 'rabbits'],
+        list: [
+            {
+                name: 'new york',
+                data: [
+                    {dogs:3},
+                    {cats: 1},
+                    {rabbits:4}
+                ]
+            },
+            {
+                name: 'california',
+                data: [
+                    {dogs:6},
+                    {cats: 3},
+                    {rabbits:9}
+                ]
+            }
+
+        ]
+    }">-->
+    <!--<table class="columns small-12">
+        <caption>{{dummy.caption}}</caption>
+        <tr>
+            <th ng-repeat="th in dummy.thead" id="{{th}}">
+                <a href="" ng-click="$parent.orderBy = th">{{th}}</a>
+            </th>
+        </tr>
+        <tr ng-repeat="listee in dummy.list  | orderBy:'-$parent.orderBy'">
+            <th id="{{listee.name}}" headers="{{listee.name}}">{{listee.name}}</th>
+            <td ng-repeat="item in listee.data" headers="{{$parent.listee.name}} {{sheet.objKey(item)}}">
+                {{item[sheet.objKey(item)]}}
+            </td>
+        </tr>
+    </table>-->
+
+</div>
