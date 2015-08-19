@@ -1,11 +1,11 @@
-<form name="{{model.name}}" ng-submit="model.submit(inputs)">
+<form name="{{model.name}}" ng-submit="model.submit($parent.inputs)">
     <div ng-repeat="(key, input) in model.inputs">
 
         <div ng-if="input.family === 'input'">
             <label for="{{input.label}}">{{input.label}}</label>
             <input id="{{input.label}}"
                     type="{{input.type}}"
-                    ng-model="$parent.$parent.inputs[input.model]"
+                    ng-model="$parent.$parent.$parent.inputs[input.model]"
                     placeholder="{{input.placeholder}}"
                     min={{input.min}}
                     max={{input.max}}
@@ -14,12 +14,12 @@
 
         <div ng-if="input.family === 'textarea'">
             <label for="{{input.label}}">{{input.label}}</label>
-            <textarea id="{{input.label}}" type="{{input.type}}" ng-model="$parent.$parent.inputs[input.model]" placeholder="{{input.placeholder}}"></textarea>
+            <textarea id="{{input.label}}" type="{{input.type}}" ng-model="$parent.$parent.$parent.inputs[input.model]" placeholder="{{input.placeholder}}"></textarea>
         </div>
 
         <div ng-if="input.family === 'select'">
             <label for="{{input.label}}">{{input.label}}</label>
-            <select name="{{input.label}}" id="{{input.label}}" ng-model="$parent.$parent.inputs[input.model]">
+            <select name="{{input.label}}" id="{{input.label}}" ng-model="$parent.$parent.$parent.inputs[input.model]">
                 <option ng-repeat="option in input.options" value="{{option}}">{{option}}</option>
             </select>
         </div>
@@ -29,7 +29,7 @@
             <label ng-repeat="option in input.options" for="{{option}}">
                 {{option}}
                 <input type="{{$parent.input.type}}"
-                       ng-model="$parent.$parent.$parent.inputs[input.model]"
+                       ng-model="$parent.$parent.$parent.$parent.inputs[input.model]"
                        ng-value="option"
                        id="{{option}}"
                        name="{{option}}">
@@ -41,14 +41,14 @@
             <label ng-repeat="option in input.options" for="{{option}}">
                 {{option}}
                 <input type="{{$parent.input.type}}"
-                       ng-model="$parent.$parent.$parent.inputs[input.model][option]"
+                       ng-model="$parent.$parent.$parent.$parent.inputs[input.model][option]"
                        id="{{option}}"
                        name="{{option}}">
             </label>
         </div>
         <hr/>
     </div>
-    <button type="submit" class="button">Submit</button>
+    <button ng-show="input.submit" type="submit" class="button">Submit</button>
 </form>
 The Object:
-{{inputs}}
+{{$parent.inputs}}
