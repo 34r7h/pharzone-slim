@@ -1,8 +1,28 @@
 <div class="">{{sheet.name}}
+    <style>
+        .fancy-checkbox input[type="checkbox"],
+        .fancy-checkbox .checked {
+            display: none;
+        }
+        .fancy-checkbox input[type="checkbox"],
+        .fancy-checkbox .checked {
+            display: none;
+        }
+
+        .fancy-checkbox input[type="checkbox"]:checked ~ .checked
+        {
+            display: inline-block;
+        }
+
+        .fancy-checkbox input[type="checkbox"]:checked ~ .unchecked
+        {
+            display: none;
+        }
+    </style>
 <!--
     {{model}}
 -->
-    <table class="columns small-12"
+    <table class="small-12"
             ng-init="dummyCart = [
                 {name:'coke', price:21, qty:321, total:6741},
                 {name:'weed', price:12, qty:34, total:408},
@@ -10,14 +30,34 @@
             ]">
         <thead>
         <tr>
-            <th width="5%"><input type="checkbox"/></th>
+            <td colspan="100">
+                <h3 class="columns small-2">{{model.name}}</h3>
+                <div class="columns small-10">
+                    {{model.filters}}
+                    <div chit="{{model.filters}}"></div>
+                </div>
+            </td>
+        </tr>
+        </thead>
+        <thead>
+        <tr>
+<!--
+            <th width="5%">
+                <label class="fancy-checkbox">
+                    <input type="checkbox" ng-model="master" ng-change="mainSelect = $parent.$parent.$parent.pharzone.Api.methods.selected(selected, dummyCart)"/>
+                    <i class="fa fa-2x fa-circle-o unchecked"></i>
+                    <i class="fa fa-2x fa-check-circle-o checked"></i>
+                </label>
+                {{mainSelect}}
+            </th>
+-->
             <th ng-repeat="(key, th) in model.tHead" width="{{th.width}}">
-                <span ng-hide="up" ng-click="$parent.orderBy = key; up = !up">
-                <i class="fa fa-caret-down"> {{key}}
+                <span ng-hide="up" ng-click="$parent.orderBy = key; up = !up">{{key}}
+                 <i ng-show="$parent.orderBy === '-'+key" class="fa fa-caret-up">
                 </i>
                 </span>
-                <span ng-show="up" ng-click="$parent.orderBy = '-'+key; up = !up">
-                    <i class="fa fa-caret-up"> {{key}}
+                <span ng-show="up" ng-click="$parent.orderBy = '-'+key; up = !up">{{key}}
+                    <i ng-show="$parent.orderBy === key" class="fa fa-caret-down">
                     </i>
                 </span>
                 <span ng-if="th.type === 'button'">
@@ -29,7 +69,11 @@
 
         <tfoot>
             <tr>
-                <td><input type="checkbox"/></td>
+                <td colspan="100">
+                    <code>SelectedObject: {{$parent.$parent.$parent.$parent.pharzone.Api.methods.selected(selected, dummyCart)}}</code>
+                </td>
+            </tr>
+            <tr>
                 <td ng-repeat="(key, footer) in model.tFoot"
                         colspan="{{footer.colspan}}">
                     <div ng-if="footer.type==='string'">
@@ -46,10 +90,18 @@
         </tfoot>
 
         <tbody>
-            <tr ng-repeat="(key,data) in dummyCart | orderBy:orderBy">
-                <td><input type="checkbox"/></td>
+            <tr ng-repeat="(key,data) in dummyCart | orderBy:orderBy | filter:inputs">
                 <td ng-repeat="val in data">
-                    {{val}}
+                        <div ng-show="$first">
+                            <label class="fancy-checkbox">
+                                <input type="checkbox" ng-model="$parent.$parent.selected[key]"/>
+                                <!-- TODO fix select on sort -->
+                                <i class="fa fa-2x fa-circle-o unchecked small-1 columns"></i>
+                                <i class="fa fa-2x fa-check-circle-o checked small-1 columns"></i>
+                                <h5 class="small-11 columns">{{val}}</h5>
+                            </label>
+                        </div>
+                     <div ng-show="!$first">{{val}}</div>
                 </td>
             </tr>
         </tbody>

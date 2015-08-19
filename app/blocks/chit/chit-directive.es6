@@ -35,9 +35,10 @@
       },
       link(scope, element, attrs) {
         /* jshint unused:false */
-        console.log(attrs.sheet);
-        scope.model = Api.models[attrs.chit];
-        console.log(scope.model);
+        console.log(attrs.chit);
+        typeof attrs.chit !== 'string' ? (console.log('complex form'), scope.model = {},
+          scope.model.inputs = JSON.parse(attrs.chit),
+          console.log(scope.model)) : (scope.model = Api.models[attrs.chit], console.log(scope.model));
         /* eslint "no-unused-vars": [2, {"args": "none"}] */
       }
     };

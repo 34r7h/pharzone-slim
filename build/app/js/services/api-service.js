@@ -91,6 +91,28 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 				});
 				return total;
 			};
+			methods.selected = function (args, obj) {
+				console.log('Selecting all..', args);
+				var selection = {};
+				angular.forEach(args, function (arg, key) {
+					arg === true ? selection[key] = obj[key] : console.log('false selection');
+				});
+				console.log(selection);
+				return selection;
+			};
+			methods.selectAll = function (args, master) {
+				if (master === true) {
+					console.log('Selecting All..', args);
+					var selectAll = {};
+					angular.forEach(args, function (arg, key) {
+						selectAll[key] = arg;
+					});
+				} else {
+					var selectAll = {};
+				}
+				console.log(selectAll);
+				return selectAll;
+			};
 			this.methods = methods;
 
 			/**/
@@ -193,6 +215,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 			// Shop
 
 			models.cart = {
+				name: 'cart',
 				type: 'basic',
 				caption: 'Adjust your shopping cart before checking out.',
 				summery: 'This shopping cart has all the items ready for purchase',
@@ -201,8 +224,18 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 					'price': { type: 'string', width: '20%' },
 					'qty': { type: 'string', width: '10%' },
 					'total': { type: 'string', width: '10%' } },
-				tFoot: { 'default': { type: 'string', value: 'Observe your total and proceed to checkout.', colspan: 2 }, 'checkout': { type: 'button', action: methods.checkout }, 'gTotal': { type: 'watcher', action: methods.total } },
-				name: 'cart'
+				tFoot: {
+					'default': { type: 'string', value: 'Observe your total and proceed to checkout.', colspan: 2 },
+					'checkout': { type: 'button', action: methods.checkout }, 'gTotal': { type: 'watcher', action: methods.total }
+				},
+				filters: {
+					name: {
+						family: 'input',
+						type: 'search',
+						model: 'name',
+						placeholder: 'Search for item\'s in cart'
+					}
+				}
 			};
 			this.models = models;
 		}
