@@ -35,8 +35,23 @@
       },
       link: function link(scope, element, attrs) {
         /* jshint unused:false */
-        console.log(attrs.chit);
-        typeof attrs.chit !== 'string' ? (console.log('complex form'), scope.model = {}, scope.model.inputs = JSON.parse(attrs.chit), console.log(scope.model)) : (scope.model = Api.models[attrs.chit], console.log(scope.model));
+        console.log('attrs.chit', attrs.chit);
+        function tryParseJSON(jsonString) {
+          try {
+            var o = JSON.parse(jsonString);
+
+            // Handle non-exception-throwing cases:
+            // Neither JSON.parse(false) or JSON.parse(1234) throw errors, hence the type-checking,
+            // but... JSON.parse(null) returns 'null', and typeof null === "object",
+            // so we must check for that, too.
+            if (o && typeof o === "object" && o !== null) {
+              return o;
+            }
+          } catch (e) {}
+
+          return false;
+        };
+        tryParseJSON(attrs.chit) ? (scope.model = {}, scope.model.inputs = JSON.parse(attrs.chit)) : scope.model = Api.models[attrs.chit];
         /* eslint "no-unused-vars": [2, {"args": "none"}] */
       }
     };
