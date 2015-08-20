@@ -1,6 +1,6 @@
 <form name="{{model.name}}" ng-submit="model.submit($parent.inputs)">
     <div ng-repeat="(key, input) in model.inputs">
-
+        <a ng-if="input.family === 'a'" class="">{{input.label}}</a>
         <div ng-if="input.family === 'input'">
             <label for="{{input.label}}">{{input.label}}</label>
             <input id="{{input.label}}"
@@ -46,7 +46,6 @@
                        name="{{option}}">
             </label>
         </div>
-        <hr/>
     </div>
     <button ng-show="input.submit" type="submit" class="button">Submit</button>
 </form>

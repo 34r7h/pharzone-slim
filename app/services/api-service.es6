@@ -4,10 +4,11 @@
 
 	class Api {
 		constructor($firebaseObject, $firebaseArray) {
-			let db = {}, methods = {}, models = {};
+			let db = {}, methods = {}, models = {}, state = {};
 			this.data = {};
 			this.methods = {};
 			this.models = {};
+			this.state = {};
 
 			/**/
 			/**/
@@ -90,6 +91,18 @@
 				console.log(selection);
 				return selection;
 			};
+			methods.changeData = (args, obj) => {
+				console.log('Changing '+args+' data...', obj);
+				obj[2] = {id: 'abcdefsad', user:'snorgan', name:'vasaline', trueName: 'methyl (1R,2R,3S,5S)-3- (benzoyloxy)-8-methyl-8-azabicyclo[3.2.1] octane-2-carboxylate',price: 34, details:'peppy stuff', form:'powder', images:['https://www.cibconline.cibc.com/olb/img/TravelInsurance-Spotlight.jpg']};
+				console.log('Changed '+args+' data...', obj);
+
+			};
+			methods.addCart = (args) => {
+				!state.cart ? (state.cart = [], state.cart.push(args))
+					: state.cart.push(args);
+			};
+
+/* WOrkjing code with no use.
 			methods.selectAll = (args, master) => {
 				if(master === true) {
 					console.log('Selecting All..',args);
@@ -103,6 +116,8 @@
 				console.log(selectAll);
 				return selectAll
 			};
+*/
+
 			this.methods = methods;
 
 			/**/
@@ -123,6 +138,47 @@
 						type: 'email',
 						layout: {},
 						model: 'email'
+					},
+					pass: {
+						label: 'password',
+						family: 'input',
+						type: 'password',
+						layout: {},
+						model: 'pass'
+					}
+				}
+			};
+			models.profile = {
+				name: 'profile',
+				submit: methods.save,
+				inputs: {
+					email: {
+						label: 'email',
+						family: 'input',
+						type: 'email',
+						layout: {},
+						model: 'email'
+					},
+					name: {
+						label: 'name',
+						family: 'input',
+						type: 'text',
+						layout: {},
+						model: 'name'
+					},
+					company: {
+						label: 'company',
+						family: 'input',
+						type: 'text',
+						layout: {},
+						model: 'company'
+					},
+					image: {
+						label: 'image',
+						family: 'image',
+						type: 'main',
+						layout: {},
+						model: 'image'
 					},
 					pass: {
 						label: 'password',
@@ -204,6 +260,32 @@
 
 			// Shop
 
+			models.shop = {
+				name: 'shop',
+				type: 'list',
+				nav: [
+					{link:'Over the counter', action: methods.changeData},
+					{link:'Away from the counter', action: methods.changeData},
+					{link:'Under the counter', action: methods.changeData}
+				],
+				filters:{
+					name:{
+						family: 'input',
+						type: 'search',
+						model: 'name',
+						placeholder: 'Search for item\'s'
+					},
+					details:{
+						family: 'input',
+						type: 'search',
+						model: 'details',
+						placeholder: 'Search by item details\'s'
+					}
+				},
+				actions: [
+					{text:'Add to Cart', action: methods.addCart}
+				]
+			};
 			models.cart = {
 				name: 'cart',
 				type: 'basic',
@@ -228,6 +310,7 @@
 				}
 			};
 			this.models = models;
+			this.state = state;
 		}
 
 		get() {

@@ -9,7 +9,7 @@
     $stateProvider
       .state('pharzone', {
         url: '/',
-        template: 'Welcome to the pharrr side <ui-view></ui-view>',
+        template: '<ui-view></ui-view>',
         controller: 'PharzoneCtrl',
         controllerAs: 'pharzone'
       })
@@ -33,7 +33,7 @@
         url: 'admin',
         template: 'Let\'s Admin!<ui-view></ui-view>'
       })
-      .state('pharzone.admin.create', {
+      .state('pharzone.admin.products.create', {
         url: '/create',
         template: '<create></create>'
       })
@@ -67,7 +67,7 @@
       })
       .state('pharzone.auth.profile', {
         url: '/:user',
-        template: 'Profile view'
+        template: 'Profile view <div chit="profile"></div>'
       });
     $urlRouterProvider.otherwise('/');
   }

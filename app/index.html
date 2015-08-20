@@ -27,10 +27,24 @@
         </li>
       </ul>
 
-      <div data-top-bar-section>
+      <div data-top-bar-section ng-init="nav = [
+            {name:'login',state:'pharzone.auth.login',side:'right'},
+            {name:'register',state:'pharzone.auth.register',side:'right'},
+            {name:'profile',state:'pharzone.auth.profile',side:'right'},
+            {name:'buying',state:'pharzone.shop',side:'left'},
+            {name:'cart',state:'pharzone.shop.cart',side:'left'},
+            {name:'selling',state:'pharzone.admin.products',side:'left'},
+            {name:'orders',state:'pharzone.admin.orders',side:'left'},
+            {name:'create',state:'pharzone.admin.products.create',side:'left'}
+        ]">
         <ul class='left'>
-          <li data-ui-sref-active='active'>
-            <a data-ui-sref='pharzone'>Home</a>
+          <li ng-show="link.side==='left'" ng-repeat="link in nav" data-ui-sref-active='active'>
+            <a data-ui-sref='{{link.state}}'>{{link.name | uppercase}}</a>
+          </li>
+        </ul>
+        <ul class='right'>
+          <li ng-show="link.side==='right'" ng-repeat="link in nav" data-ui-sref-active='active'>
+            <a data-ui-sref='{{link.state}}'>{{link.name | uppercase}}</a>
           </li>
         </ul>
       </div>
