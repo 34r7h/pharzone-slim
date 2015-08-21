@@ -27,20 +27,32 @@
       scope: {},
       templateUrl: 'blocks/list/list-directive.tpl.html',
       replace: false,
-      controllerAs: 'lisst',
-      controller: function controller() {
+      controllerAs: 'list',
+      controller: function controller($scope) {
         var vm = this;
         vm.name = 'list';
+        vm.data = $scope.data;
         vm.models = Api.models;
         vm.objKey = function (obj) {
           var key = Object.keys(obj);
           return key[0];
         };
+        vm.setState = Api.methods.setState;
       },
       link: function link(scope, element, attrs) {
         /* jshint unused:false */
+        var count = 0;
+        var getData = function getData() {
+          count++;
+          setTimeout(function () {
+            console.log('getting data ' + count, scope);
+            !Api.data.object[attrs.list] ? getData() : (scope.data = Api.data.object[attrs.list], console.log(scope.data), scope.$apply());
+          }, 500);
+        };
+        getData();
+
         scope.model = Api.models[attrs.list];
-        console.log('list scope.model', scope.model);
+        //console.info('list scope.model',scope.model);
         // element.DataTable();
         /* eslint "no-unused-vars": [2, {"args": "none"}] */
       }
