@@ -22,12 +22,14 @@
 <!--
     {{model}}
 -->
-    <table class="small-12"
-            ng-init="dummyCart = [
+    <!--<table class="small-12"
+            ng-init="data = [
                 {name:'coke', price:21, qty:321, total:6741},
                 {name:'weed', price:12, qty:34, total:408},
                 {name:'aya', price:49, qty:64, total: 3136}
-            ]">
+            ]">-->
+    Looking for tabular data {{$parent.$parent.$parent.$parent.pharzone.Api.state[model.name]}} & {{data}}
+    <table class="small-12">
         <thead>
         <tr>
             <td colspan="100">
@@ -44,7 +46,7 @@
 <!--
             <th width="5%">
                 <label class="fancy-checkbox">
-                    <input type="checkbox" ng-model="master" ng-change="mainSelect = $parent.$parent.$parent.pharzone.Api.methods.selected(selected, dummyCart)"/>
+                    <input type="checkbox" ng-model="master" ng-change="mainSelect = $parent.$parent.$parent.pharzone.Api.methods.selected(selected, data)"/>
                     <i class="fa fa-2x fa-circle-o unchecked"></i>
                     <i class="fa fa-2x fa-check-circle-o checked"></i>
                 </label>
@@ -61,7 +63,7 @@
                     </i>
                 </span>
                 <span ng-if="th.type === 'button'">
-                    <a href="" class="button" ng-click="th.action(dummyCart)">{{th.actionName}}</a>
+                    <a href="" class="button" ng-click="th.action(data)">{{th.actionName}}</a>
                 </span>
             </th>
         </tr>
@@ -70,7 +72,7 @@
         <tfoot>
             <tr>
                 <td colspan="100">
-                    <code>SelectedObject: {{$parent.$parent.$parent.$parent.pharzone.Api.methods.selected(selected, dummyCart)}}</code>
+                    <!--<code>SelectedObject: {{$parent.$parent.$parent.$parent.pharzone.Api.methods.selected(selected, data)}}</code>-->
                 </td>
             </tr>
             <tr>
@@ -80,17 +82,17 @@
                         {{footer.value}}
                     </div>
                     <div ng-if="footer.type==='button'">
-                        <button ng-click="footer.action(dummyCart)">{{key}}</button>
+                        <button ng-click="footer.action(data)">{{key}}</button>
                     </div>
                     <div ng-if="footer.type==='watcher'">
-                        <b>{{footer.action(dummyCart)}}</b>
+                        <b>{{footer.action(data)}}</b>
                     </div>
                 </td>
             </tr>
         </tfoot>
 
         <tbody>
-            <tr ng-repeat="(key,data) in dummyCart | orderBy:orderBy | filter:inputs">
+            <tr ng-repeat="(key,data) in data | orderBy:orderBy | filter:inputs">
                 <td ng-repeat="val in data">
                         <div ng-show="$first">
                             <label class="fancy-checkbox">

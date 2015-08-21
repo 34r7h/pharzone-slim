@@ -10,18 +10,18 @@
    * @description
    *
    * @example
-     <example module="pharzone">
-       <file name="index.html">
-        <content></content>
-       </file>
-     </example>
+   <example module="pharzone">
+   <file name="index.html">
+   <content></content>
+   </file>
+   </example>
    *
    */
   angular
     .module('pharzone')
     .directive('content', content);
 
-  function content() {
+  function content(Api) {
     return {
       restrict: 'EA',
       scope: {},
@@ -31,9 +31,30 @@
       controller() {
         let vm = this;
         vm.name = 'content';
+        vm.models = Api.models;
+        vm.objKey = (obj) => {
+          var key = Object.keys(obj);
+          return key[0];
+        };
       },
       link(scope, element, attrs) {
         /* jshint unused:false */
+        var count = 0;
+        var getData = () => {
+          count++;
+          setTimeout(()=>{
+            scope.name = attrs.content;
+            scope.model = Api.models[scope.name];
+            // console.error(Api.data.object, Api.state.params);
+            !Api.state[scope.name] ?
+              scope.data = Api.state[scope.name] || Api.data.object[scope.name][Api.state.params[scope.name]]
+              : scope.data = Api.state[scope.name];
+            scope.$apply();
+          },2500);
+        };
+        getData();
+
+        // element.DataTable();
         /* eslint "no-unused-vars": [2, {"args": "none"}] */
       }
     };

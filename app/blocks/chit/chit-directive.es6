@@ -35,7 +35,6 @@
       },
       link(scope, element, attrs) {
         /* jshint unused:false */
-        console.log('attrs.chit', attrs.chit);
         function tryParseJSON (jsonString){
           try {
             var o = JSON.parse(jsonString);

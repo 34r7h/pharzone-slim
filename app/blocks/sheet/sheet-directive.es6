@@ -41,6 +41,7 @@
         /* jshint unused:false */
         console.log(attrs.sheet);
         scope.model = Api.models[attrs.sheet];
+        scope.data = Api.state[scope.model.name];
         console.log(scope.model, element);
         // element.DataTable();
         /* eslint "no-unused-vars": [2, {"args": "none"}] */

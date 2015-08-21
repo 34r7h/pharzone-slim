@@ -1,17 +1,9 @@
-<div ng-init="
-dummyItems = [
-    {id: 'abcde', user:'morgan', name:'cocaine', trueName: 'methyl (1R,2R,3S,5S)-3- (benzoyloxy)-8-methyl-8-azabicyclo[3.2.1] octane-2-carboxylate',price: 34, details:'peppy stuff', form:'powder', images:['http://i.huffpost.com/gen/1658836/images/o-COCAINE-facebook.jpg']},
-    {id: 'upihugy', user:'irth', name:'ayahuasca', trueName: 'yagé', price: 324, details:'ego stuff', form:'tea', images:['http://headoverheels.org.uk/wp-content/gallery/ayahuasca-visions/ayahuasca-visions_002.jpg']},
-    {id: '43546e5ytuf', user:'jaafar', name:'Mushrooms', trueName: 'psilocybe cubensis', price: 98, details:'headcheese stuff', form:'dried', images:['http://innervisions.nl/wp-content/themes/BLANK-Theme/images/big/growbox-psilocybe-cubensis-B-plus-innervisions.jpg']},
-    {id: '89gouik', user:'alex', name:'dmt', trueName: 'N,N-Dimethyltryptamine', price: 23, details:'soul stuff', form:'crystaline', images:['http://i348.photobucket.com/albums/q329/Phlux-/SDC14398_978x768.jpg']},
-    {id: 'igydy5e', user:'supertrooper', name:'peyote', trueName: 'Lophophora williamsii', price: 9, details:'native stuff', form:'buttons', images:['http://www.magicactus.com/images/Lophophora%20Williamsii%20var.%20Nuevo%20Yucatan%20in%20flower.JPG']}
-    ];
-    show = 'many';">
-
+<div ng-init="show = 'many';">
+Main Object {{model.name}}: {{$parent.$parent.$parent.pharzone.Api.data.object[model.name]}}
 </div>
 <ul ng-show="show==='many'" class="button-group rounded even-{{ model.nav.length }}">
     <li ng-repeat="link in model.nav">
-        <a class="button info" ng-click="link.action(link.link, $parent.dummyItems)">{{link.link}}</a>
+        <a class="button info" ng-click="link.action(link.link, $parent.data)">{{link.link}}</a>
     </li>
 </ul>
 <ul ng-show="show==='one'" class="button-group rounded even-{{ model.actions.length+1 }}">
@@ -27,18 +19,14 @@ dummyItems = [
         <div chit="{{model.filters}}"></div>
     </div>
     <div class="small-12 medium-10 columns">
-        <div ng-repeat="item in dummyItems | orderBy:orderBy | filter:inputs" class="small-12 medium-4 large-3 columns left">
+        <div ng-repeat="item in data | orderBy:orderBy | filter:inputs" class="small-12 medium-4 large-3 columns left">
             <img ng-src="{{item.images[0]}}" class="small-12" alt="" ng-style="{height:'200px'}"/>
             <div class="panel">
                 <h4>{{item.name}}</h4>
                 <p>{{item.details}}</p>
-                <a class="button small-12" ui-sref="pharzone.shop.product({ product: item.id })" ng-click="$parent.show = 'one'; $parent.one = item">{{item.price | currency}}</a>
+                <a class="button small-12" ui-sref="pharzone.shop.product({ product: item.id })" ng-click="$parent.show = 'one'; $parent.one = item; $parent.list.setState('product', item)">{{item.price | currency}}</a>
                 <p>From {{item.user}}</p>
             </div>
         </div>
     </div>
-</div>
-<div class="row" ng-show="show === 'one'">
-    One thing
-    <h1>{{one}}</h1>
 </div>

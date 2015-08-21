@@ -3,12 +3,30 @@
 	let fb = new Firebase('https://pharzone.firebaseio.com/v2/');
 
 	class Api {
-		constructor($firebaseObject, $firebaseArray) {
-			let db = {}, methods = {}, models = {}, state = {};
-			this.data = {};
+		constructor($firebaseObject, $firebaseArray, $firebaseAuth, $rootScope) {
+			let db = {users:{}}, methods = {}, models = {}, state = {}, authObj = $firebaseAuth(fb);
+
+			this.data = {object:{}, array:{}};
 			this.methods = {};
 			this.models = {};
 			this.state = {};
+
+			this.auth = authObj.$getAuth();
+			$rootScope.unauth = ()=>{
+				console.log('logging out');
+				var authObj = $firebaseAuth(fb);
+				var userIs = authObj.$getAuth();
+				console.log('userIs', userIs);
+				authObj.$unauth();
+				Api.state.user = authObj.$getAuth();
+				console.log('userIsnt', userIs);
+			};
+			if (this.auth) {
+				console.log("Logged in as:", this.auth.uid);
+				state.user = this.auth;
+			} else {
+				console.log("Logged out");
+			}
 
 			/**/
 			/**/
@@ -30,10 +48,9 @@
 			/**/
 
 			methods.save = (args) => {
-				console.log('save..');
-				angular.forEach(args, (arg, key) => {
-					console.log(key, arg);
-				});
+				console.log('saving..', args);
+				this.data.object[args.loc] = args.obj;
+				this.data.object.$save();
 			};
 			methods.add = (args) => {
 				console.log('add..');
@@ -47,11 +64,17 @@
 					console.log(key, arg);
 				});
 			};
-			methods.login = (args) => {
-				// Expects: email, pass
-				console.log('login..', args.email + ': ' + args.pass);
-				angular.forEach(args, (arg, key) => {
-					console.log(key, arg);
+			methods.login = (args)=>{
+				console.log("Logging in as:", args.email + ': '+args.pass);
+				var authObj = $firebaseAuth(fb);
+				authObj.$authWithPassword({
+					email: args.email,
+					password: args.pass
+				}).then(function(authData) {
+					console.log("Logged in as:", authData.uid);
+					state.user = authData;
+				}).catch(function(error) {
+					console.error("Authentication failed:", error);
 				});
 			};
 			methods.logout = (args) => {
@@ -60,10 +83,87 @@
 					console.log(key, arg);
 				});
 			};
-			methods.register = (args) => {
-				console.log('register..');
-				angular.forEach(args, (arg, key) => {
-					console.log(key, arg);
+/*
+			methods.register = (args)=>{
+				console.log('registering user', args);
+				console.log('getting auth', authObj);
+				authObj.$createUser({
+					email: args.email,
+					password: args.pass
+				}).then(function(userData) {
+					console.log('user registered, making user object for db');
+					var userObject = {};
+					angular.forEach(args, (arg, key)=>{
+						arg.length === 0 ? 'arg is undefined, skipping'
+							: userObject[key] = arg, console.log('reading args in object ', userObject[arg]);
+					});
+					userObject['uid'] = userData.uid;
+					console.log('userObject',userObject);
+					methods.save({loc:'users', obj:userObject});
+					this.data[userData.uid] = userObject;
+					console.log('db', this.data);
+					this.data.object.$save().then(()=>{
+						// Indexing users by email
+						console.log('indexing...');
+						var usersIndex = data.object.index.users;
+						var cleanEmail = args.email.replace('.','`');
+						usersIndex[cleanEmail] = userData.uid;
+						usersIndex.$save();
+						console.log(usersIndex + userData.uid + " created successfully!");
+					});
+
+					return authObj.$authWithPassword({
+						email: args.email,
+						password: args.pass
+					});
+				}).then(function(authData) {
+					console.log("Logged in as:", authData.uid);
+					$rootScope.user = authData.uid;
+				}).catch(function(error) {
+					console.error("Error: ", error);
+				});
+			};
+*/
+			methods.register = (args)=>{
+				console.log('registering user', args.email + ': '+ args.pass);
+				var authObj = $firebaseAuth(fb);
+				var timestamp = Date.now();
+				authObj.$createUser({
+					email: args.email,
+					password: args.pass
+				}).then(function(userData) {
+					userData.details = {};
+					var dbObj = $firebaseObject(fb.child('users')).$loaded().then((data)=>{
+						angular.forEach(args, (arg, key) => {
+							console.log('arg for userData details object on user creation '+key, arg);
+							userData.details[key]=arg;
+						});
+						userData.details.pass = 'Nothing to see here.'
+						// Create initial state property on new user.
+						userData['state']={};
+						userData['state'][timestamp] = state;
+						data[userData.uid] = userData;
+						data.$save().then(()=>{
+							// Indexing users by email
+							console.log('indexing...');
+							var dbIndex = $firebaseObject(fb.child('index/users')).$loaded().then((data)=>{
+								var cleanEmail = args.email.replace('.','`');
+								data[cleanEmail] = userData.uid;
+								data.$save()
+							});
+						});
+						console.log("User " + userData.uid + " created successfully!");
+					});
+
+					return authObj.$authWithPassword({
+						email: args.email,
+						password: args.pass
+					});
+				}).then(function(authData) {
+					console.log("Logged in as:", authData.uid);
+					state.user = authData;
+				}).catch(function(error) {
+					console.error("Error: ", error);
 				});
 			};
 			methods.checkout = (args) => {
@@ -100,6 +200,17 @@
 			methods.addCart = (args) => {
 				!state.cart ? (state.cart = [], state.cart.push(args))
 					: state.cart.push(args);
+			};
+			methods.setState = (stateName, obj) => {
+				console.info('setting app state to '+stateName, obj);
+				var timestamp = Date.now();
+				$firebaseObject(fb.child('users/'+this.state.user.uid+'/state')).$loaded().then((data)=>{
+					this.state[stateName] = obj;
+					data[timestamp]=this.state;
+					data.$save();
+
+				});
+				//this.data.object.users[state.user.uid][stateName].state[timestamp]=obj;
 			};
 
 /* WOrkjing code with no use.
@@ -244,7 +355,7 @@
 						layout: {},
 						model: 'heardAbout',
 						options: ['Store', 'Friend']
-					},
+					}/*,
 					recommend: {
 						label: 'How likely are you to recommend us?',
 						family: 'input',
@@ -254,7 +365,7 @@
 						min: 0,
 						max: 100,
 						step: 4
-					}
+					}*/
 				}
 			};
 
@@ -309,8 +420,37 @@
 					}
 				}
 			};
+			models.product = {
+				name:'product',
+				type: 'item',
+				layout:{
+					image:{
+						columns: 'small-12'
+					},
+					title:{
+						columns: 'small-12'
+					},
+					price:{
+						columns: 'small-6'
+					},
+					action:{
+						columns: 'small-6'
+					}
+				}
+			};
 			this.models = models;
+
+			/**/
+			/**/
+			/*      STATES     */
+			/**/
+			/**/
+
 			this.state = state;
+
+
+			// var cState = $state;
+			// this.state.uiState = $state;
 		}
 
 		get() {
