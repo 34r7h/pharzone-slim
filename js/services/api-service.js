@@ -91,11 +91,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 					console.error("Authentication failed:", error);
 				});
 			};
-			methods.logout = function (args) {
-				console.log('logout..');
-				angular.forEach(args, function (arg, key) {
-					console.log(key, arg);
-				});
+			methods.logout = function () {
+				console.log('logging out');
+				var authObj = $firebaseAuth(fb);
+				var userIs = authObj.$getAuth();
+				console.log(userIs);
+				authObj.$unauth();
+				state.user = authObj;
+				console.log(userIs);
 			};
 			/*
    			methods.register = (args)=>{
@@ -180,6 +183,32 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 					console.error("Error: ", error);
 				});
 			};
+			methods.removeUser = function (args) {
+				// TODO Clean up lingering db entries
+				console.log("Deleting User: ", args.email + ': ' + args.pass);
+				var authObj = $firebaseAuth(fb);
+				var user = authObj.uid;
+				authObj.$removeUser({
+					email: email,
+					password: pass
+				}).then(function () {
+					var dbObj = $firebaseObject(fb.child('users')).$loaded().then(function (data) {
+						data[user] = null;
+						data.$save().then(function () {
+							// De-indexing users by email
+							console.log('de-indexing...');
+							var dbIndex = $firebaseObject(fb.child('index/users/email"')).$loaded().then(function (data) {
+								var cleanEmail = email.replace('.', '`');
+								data[cleanEmail] = null;
+								data.$save();
+							});
+						});
+					});
+					console.log("User removed successfully!");
+				})['catch'](function (error) {
+					console.error("Error: ", error);
+				});
+			};
 			methods.checkout = function (args) {
 				console.log('checkout..');
 				angular.forEach(args, function (arg, key) {
@@ -245,6 +274,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 			/*      MODELS     */
 			/**/
 			/**/
+
+			// Nav
+
+			models.nav = [{ name: 'login', state: 'pharzone.auth.login', side: 'right' }, { name: 'register', state: 'pharzone.auth.register', side: 'right' }, { name: 'profile', state: 'pharzone.auth.profile', side: 'right' }, { name: 'logout', state: 'pharzone', action: methods.logout, side: 'right' }, { name: 'buying', state: 'pharzone.shop', side: 'left' }, { name: 'cart', state: 'pharzone.shop.cart', side: 'left' }, { name: 'selling', state: 'pharzone.admin.products', side: 'left' }, { name: 'orders', state: 'pharzone.admin.orders', side: 'left' }, { name: 'create', state: 'pharzone.admin.products.create', side: 'left' }];
 
 			// Auth
 
@@ -441,8 +474,53 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 					}
 				}
 			};
-			this.models = models;
 
+			// Admin
+
+			models.create = {
+				name: 'create',
+				submit: methods.add,
+				inputs: {
+					name: {
+						label: 'Name of Deal',
+						family: 'input',
+						type: 'text',
+						layout: {},
+						model: 'name'
+					},
+					details: {
+						label: 'details',
+						family: 'input',
+						type: 'text',
+						layout: {},
+						model: 'details'
+					},
+					about: {
+						label: 'about',
+						family: 'textarea',
+						type: '',
+						layout: {},
+						model: 'about'
+					},
+					term: {
+						label: 'How long is this offer open?',
+						family: 'radio',
+						type: 'radio',
+						layout: {},
+						model: 'term',
+						options: ['Forever', 'Until']
+					},
+					price: {
+						label: 'Price per unit',
+						family: 'input',
+						type: 'number',
+						layout: {},
+						model: 'price'
+					}
+				}
+			};
+
+			this.models = models;
 			/**/
 			/**/
 			/*      STATES     */

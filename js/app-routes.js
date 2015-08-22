@@ -8,7 +8,7 @@
   function config($urlRouterProvider, $stateProvider) {
     $stateProvider.state('pharzone', {
       url: '/',
-      template: '' + 'pharzone.Api.state: {{pharzone.Api.state}}' + '<ui-view></ui-view>',
+      templateUrl: 'app-template.html',
       controller: 'PharzoneCtrl',
       controllerAs: 'pharzone'
     }).state('pharzone.shop', {
@@ -40,7 +40,7 @@
       template: '<orders></orders><ui-view></ui-view>'
     }).state('pharzone.admin.orders.order', {
       url: '/:order',
-      template: 'Single Order Goes Here'
+      template: '<div content="order"></div>Single Order Goes Here'
     }).state('pharzone.auth', {
       url: 'auth',
       template: 'Let\'s Authenticate!<auth></auth><ui-view></ui-view>'

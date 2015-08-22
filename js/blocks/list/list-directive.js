@@ -45,9 +45,9 @@
         var getData = function getData() {
           count++;
           setTimeout(function () {
-            console.log('getting data ' + count, scope);
-            !Api.data.object[attrs.list] ? getData() : (scope.data = Api.data.object[attrs.list], console.log(scope.data), scope.$apply());
-          }, 500);
+            // console.log('getting data '+count, scope);
+            !Api.data.object[attrs.list] ? getData() : (scope.data = Api.data.object[attrs.list], console.log('List data available', scope.data), scope.$apply());
+          }, 250);
         };
         getData();
 
