@@ -45,10 +45,11 @@
           setTimeout(function () {
             scope.name = attrs.content;
             scope.model = Api.models[scope.name];
-            // console.error(Api.data.object, Api.state.params);
-            !Api.state[scope.name] ? scope.data = Api.state[scope.name] || Api.data.object[scope.name][Api.state.params[scope.name]] : scope.data = Api.state[scope.name];
+            //console.debug(Api.data.object, Api.state.params);
+            //console.debug('Content '+scope.name, 'Keys'+Object.keys(Api.state.params));
+            !Api.data.object[scope.name] ? getData() : (scope.data = Api.data.object[Object.keys(Api.state.params)][Api.state.params[scope.name]], console.log('Content data available', scope.data));
             scope.$apply();
-          }, 2500);
+          }, 250);
         };
         getData();
 

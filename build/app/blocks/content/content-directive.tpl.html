@@ -1,3 +1,5 @@
-content model? {{model | json}}
-<br/>
-content data? <h1>{{data | json}}</h1>
+<h4>content model?
+</h4><div ng-repeat="(key, val) in model"><b>{{key}}: </b>{{val | json}}</div>
+<h4>content data?
+</h4><div ng-repeat="(key, val) in data"><b>{{key}}: </b>{{val | json}}</div>
+

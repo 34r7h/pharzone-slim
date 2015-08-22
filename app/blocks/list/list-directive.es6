@@ -45,13 +45,13 @@
         var getData = () => {
           count++;
           setTimeout(()=>{
-            console.log('getting data '+count, scope);
+            // console.log('getting data '+count, scope);
             !Api.data.object[attrs.list] ?
               getData()
             : (scope.data = Api.data.object[attrs.list],
-              console.log(scope.data),
+              console.log('List data available', scope.data),
               scope.$apply());
-          },500);
+          },250);
         };
         getData();
 
