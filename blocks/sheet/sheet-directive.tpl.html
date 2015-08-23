@@ -1,4 +1,4 @@
-<div class="">{{sheet.name}}
+<div class="">
     <style>
         .fancy-checkbox input[type="checkbox"],
         .fancy-checkbox .checked {
@@ -19,16 +19,10 @@
             display: none;
         }
     </style>
-<!--
-    {{model}}
--->
-    <!--<table class="small-12"
-            ng-init="data = [
-                {name:'coke', price:21, qty:321, total:6741},
-                {name:'weed', price:12, qty:34, total:408},
-                {name:'aya', price:49, qty:64, total: 3136}
-            ]">-->
-    Looking for tabular data {{$parent.$parent.$parent.$parent.pharzone.Api.state[model.name]}} & {{data}}
+    <b ng-show="$root.debug" ng-click="showSheet = !showSheet">Looking for tabular data</b>
+    <div ng-if="showSheet">
+        {{$parent.$parent.$parent.$parent.pharzone.Api.state[model.name]}} & {{data}}
+    </div>
     <table class="small-12">
         <thead>
         <tr>
@@ -109,47 +103,5 @@
         </tbody>
 
     </table>
-
-
-
-    <!--<table
-            class="columns small-12"
-            ng-init="dummy = {
-        caption: 'Cute Animals Per 1,000 People',
-        thead: ['state','dogs', 'cats', 'rabbits'],
-        list: [
-            {
-                name: 'new york',
-                data: [
-                    {dogs:3},
-                    {cats: 1},
-                    {rabbits:4}
-                ]
-            },
-            {
-                name: 'california',
-                data: [
-                    {dogs:6},
-                    {cats: 3},
-                    {rabbits:9}
-                ]
-            }
-
-        ]
-    }">-->
-    <!--<table class="columns small-12">
-        <caption>{{dummy.caption}}</caption>
-        <tr>
-            <th ng-repeat="th in dummy.thead" id="{{th}}">
-                <a href="" ng-click="$parent.orderBy = th">{{th}}</a>
-            </th>
-        </tr>
-        <tr ng-repeat="listee in dummy.list  | orderBy:'-$parent.orderBy'">
-            <th id="{{listee.name}}" headers="{{listee.name}}">{{listee.name}}</th>
-            <td ng-repeat="item in listee.data" headers="{{$parent.listee.name}} {{sheet.objKey(item)}}">
-                {{item[sheet.objKey(item)]}}
-            </td>
-        </tr>
-    </table>-->
 
 </div>

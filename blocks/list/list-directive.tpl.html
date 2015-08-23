@@ -1,6 +1,9 @@
 <div ng-init="show = 'many';">
-    <b>List Object </b>:
-    <div ng-repeat="(key, obj) in $parent.$parent.$parent.pharzone.Api.data.object[model.name]"><b>{{key}}: </b>{{obj}}</div>
+    <b ng-show="$root.debug" ng-click="showList = !showList">List Object :</b>
+    <div ng-if="showList">
+        <div ng-repeat="(key, obj) in $parent.$parent.$parent.pharzone.Api.data.object[model.name]"><b>{{key}}: </b>{{obj}}</div>
+    </div>
+
 </div>
 <ul ng-show="show==='many'" class="button-group rounded even-{{ model.nav.length }}">
     <li ng-repeat="link in model.nav">
