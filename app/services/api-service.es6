@@ -4,7 +4,7 @@
 
 	class Api {
 		constructor($firebaseObject, $firebaseArray, $firebaseAuth, $rootScope) {
-			let db = {users:{}}, methods = {}, models = {}, state = {}, authObj = $firebaseAuth(fb);
+			let db = {users:{}, data:{}}, methods = {}, models = {}, state = {}, authObj = $firebaseAuth(fb);
 
 			this.data = {object:{}, array:{}};
 			this.methods = {};
@@ -36,6 +36,10 @@
 
 			db.obj = $firebaseObject(fb).$loaded().then((data) => {
 				this.data.object = data;
+				state.data = state.user ?
+					this.data.object.users[state.user.uid] :
+					{};
+				methods.setNav();
 			});
 			db.arr = $firebaseArray(fb).$loaded().then((data) => {
 				this.data.array = data;
@@ -54,9 +58,14 @@
 			};
 			methods.add = (args) => {
 				console.log('add..');
-				angular.forEach(args, (arg, key) => {
-					console.log(key, arg);
-				});
+				var type = state.state.name === 'pharzone.admin.products.create' ?
+					'products' :
+					state.state.name === 'pharzone.shop.cart' ?
+						'orders' :
+						console.log('Right method, wrong state');
+				var loc = $firebaseArray(fb.child('users/'+state.user.uid+'/secure/'+type));
+				loc.$add(args);
+				console.log(loc);
 			};
 			methods.remove = (args) => {
 				console.log('remove..');
@@ -73,6 +82,7 @@
 				}).then(function(authData) {
 					console.log("Logged in as:", authData.uid);
 					state.user = authData;
+					methods.setNav();
 				}).catch(function(error) {
 					console.error("Authentication failed:", error);
 				});
@@ -83,50 +93,11 @@
 				var userIs = authObj.$getAuth();
 				console.log(userIs);
 				authObj.$unauth();
-				state.user = authObj;
+				state.user = null;
+				state.data = null;
+				methods.setNav();
 				console.log(userIs);
 			};
-/*
-			methods.register = (args)=>{
-				console.log('registering user', args);
-				console.log('getting auth', authObj);
-				authObj.$createUser({
-					email: args.email,
-					password: args.pass
-				}).then(function(userData) {
-					console.log('user registered, making user object for db');
-					var userObject = {};
-					angular.forEach(args, (arg, key)=>{
-						arg.length === 0 ? 'arg is undefined, skipping'
-							: userObject[key] = arg, console.log('reading args in object ', userObject[arg]);
-					});
-					userObject['uid'] = userData.uid;
-					console.log('userObject',userObject);
-					methods.save({loc:'users', obj:userObject});
-					this.data[userData.uid] = userObject;
-					console.log('db', this.data);
-					this.data.object.$save().then(()=>{
-						// Indexing users by email
-						console.log('indexing...');
-						var usersIndex = data.object.index.users;
-						var cleanEmail = args.email.replace('.','`');
-						usersIndex[cleanEmail] = userData.uid;
-						usersIndex.$save();
-						console.log(usersIndex + userData.uid + " created successfully!");
-					});
-
-					return authObj.$authWithPassword({
-						email: args.email,
-						password: args.pass
-					});
-				}).then(function(authData) {
-					console.log("Logged in as:", authData.uid);
-					$rootScope.user = authData.uid;
-				}).catch(function(error) {
-					console.error("Error: ", error);
-				});
-			};
-*/
 			methods.register = (args)=>{
 				console.log('registering user', args.email + ': '+ args.pass);
 				var authObj = $firebaseAuth(fb);
@@ -141,7 +112,7 @@
 							console.log('arg for userData details object on user creation '+key, arg);
 							userData.details[key]=arg;
 						});
-						userData.details.pass = 'Nothing to see here.'
+						userData.details.pass = 'Nothing to see here.';
 						// Create initial state property on new user.
 						userData['state']={};
 						userData['state'][timestamp] = state;
@@ -158,15 +129,7 @@
 						console.log("User " + userData.uid + " created successfully!");
 					});
 
-					return authObj.$authWithPassword({
-						email: args.email,
-						password: args.pass
-					});
-				}).then(function(authData) {
-					console.log("Logged in as:", authData.uid);
-					state.user = authData;
-				}).catch(function(error) {
-					console.error("Error: ", error);
+					return methods.login(args);
 				});
 			};
 			methods.removeUser = (args) => {
@@ -197,6 +160,7 @@
 			};
 			methods.checkout = (args) => {
 				console.log('checkout..');
+				methods.add(args);
 				angular.forEach(args, (arg, key) => {
 					console.log(key, arg);
 				});
@@ -222,7 +186,7 @@
 			};
 			methods.changeData = (args, obj) => {
 				console.log('Changing '+args+' data...', obj);
-				obj[2] = {id: 'abcdefsad', user:'snorgan', name:'vasaline', trueName: 'methyl (1R,2R,3S,5S)-3- (benzoyloxy)-8-methyl-8-azabicyclo[3.2.1] octane-2-carboxylate',price: 34, details:'peppy stuff', form:'powder', images:['https://www.cibconline.cibc.com/olb/img/TravelInsurance-Spotlight.jpg']};
+				obj.push({id: 'abcdefsad', user:'snorgan', name:'vasaline', trueName: 'methyl (1R,2R,3S,5S)-3- (benzoyloxy)-8-methyl-8-azabicyclo[3.2.1] octane-2-carboxylate',price: 34, details:'peppy stuff', form:'powder', images:['https://www.cibconline.cibc.com/olb/img/TravelInsurance-Spotlight.jpg']});
 				console.log('Changed '+args+' data...', obj);
 
 			};
@@ -233,13 +197,43 @@
 			methods.setState = (stateName, obj) => {
 				console.info('setting app state to '+stateName, obj);
 				var timestamp = Date.now();
-				$firebaseObject(fb.child('users/'+this.state.user.uid+'/state')).$loaded().then((data)=>{
-					this.state[stateName] = obj;
-					data[timestamp]=this.state;
-					data.$save();
 
-				});
+				this.state.user ?
+					$firebaseObject(fb.child('users/'+this.state.user.uid+'/state')).$loaded().then((data)=>{
+						this.state[stateName] = obj;
+						data[timestamp]=this.state;
+						data.$save();
+					}) : stateName ?
+							console.info('not logged in, no state to save') :
+							console.info('stateNamed is not whut?') ;
+
+
 				//this.data.object.users[state.user.uid][stateName].state[timestamp]=obj;
+			};
+			methods.setNav = ()=>{
+				!state.user ?
+					models.nav = [
+						{name:'login',state:'pharzone.auth.login',side:'right'},
+						{name:'register',state:'pharzone.auth.register',side:'right'},
+						{name:'buying',state:'pharzone.shop',side:'left'},
+						{name:'cart',state:'pharzone.shop.cart',side:'left'}
+					] : this.data.object.users[state.user.uid].details.userType !== 'lab' ?
+						models.nav = [
+							{name:'profile',state:'pharzone.auth.profile',side:'right'},
+							{name:'logout',state:'pharzone', action: methods.logout, side:'right'},
+							{name:'buying',state:'pharzone.shop',side:'left'},
+							{name:'cart',state:'pharzone.shop.cart',side:'left'},
+							{name:'orders',state:'pharzone.admin.orders',side:'left'}
+						] :
+							models.nav = [
+								{name:'profile',state:'pharzone.auth.profile',side:'right'},
+								{name:'logout',state:'pharzone', action: methods.logout, side:'right'},
+								{name:'buying',state:'pharzone.shop',side:'left'},
+								{name:'cart',state:'pharzone.shop.cart',side:'left'},
+								{name:'selling',state:'pharzone.admin.products',side:'left'},
+								{name:'orders',state:'pharzone.admin.orders',side:'left'},
+								{name:'create',state:'pharzone.admin.products.create',side:'left'}
+							];
 			};
 
 /* WOrkjing code with no use.
@@ -268,23 +262,13 @@
 
 			// Nav
 
-
-			models.nav = [
-				{name:'login',state:'pharzone.auth.login',side:'right'},
-				{name:'register',state:'pharzone.auth.register',side:'right'},
-				{name:'profile',state:'pharzone.auth.profile',side:'right'},
-				{name:'logout',state:'pharzone', action: methods.logout, side:'right'},
-				{name:'buying',state:'pharzone.shop',side:'left'},
-				{name:'cart',state:'pharzone.shop.cart',side:'left'},
-				{name:'selling',state:'pharzone.admin.products',side:'left'},
-				{name:'orders',state:'pharzone.admin.orders',side:'left'},
-				{name:'create',state:'pharzone.admin.products.create',side:'left'}
-			];
+			//methods.setNav();
 
 			// Auth
 
 			models.login = {
 				name: 'login',
+				submitName: 'Login',
 				submit: methods.login,
 				inputs: {
 					email: {
@@ -306,6 +290,7 @@
 			models.profile = {
 				name: 'profile',
 				submit: methods.save,
+				submitName: 'Save',
 				inputs: {
 					email: {
 						label: 'email',
@@ -347,6 +332,7 @@
 			models.register = {
 				name: 'register',
 				submit: methods.register,
+				submitName: 'Register Account',
 				inputs: {
 					email: {
 						label: 'email',
@@ -488,6 +474,7 @@
 			models.create = {
 				name: 'create',
 				submit: methods.add,
+				submitName: 'Create',
 				inputs: {
 					name: {
 						label: 'Name of Deal',

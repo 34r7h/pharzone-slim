@@ -39,10 +39,15 @@
       },
       link(scope, element, attrs) {
         /* jshint unused:false */
-        console.log(attrs.sheet);
-        scope.model = Api.models[attrs.sheet];
-        scope.data = Api.state[scope.model.name];
-        console.log(scope.model, element);
+        var getData = ()=>{
+          console.log(attrs.sheet);
+          scope.name = attrs.sheet;
+          scope.model = Api.models[scope.name];
+          scope.data = Api.state[scope.name];
+          console.log(scope.model, element);
+        };
+        getData();
+
         // element.DataTable();
         /* eslint "no-unused-vars": [2, {"args": "none"}] */
       }

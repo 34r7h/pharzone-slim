@@ -47,7 +47,10 @@
             </label>
         </div>
     </div>
-    <button ng-show="input.submit" type="submit" class="button">Submit</button>
+    <button ng-show="model.submit" type="submit" class="button">{{model.submitName}}</button>
 </form>
-The Object:
-{{$parent.inputs}}
+<b ng-show="$root.debug" ng-click="show.object = !show.object">The Object:</b>
+
+<div ng-if="show.object" ng-repeat="(key,prop) in $parent.inputs">
+    <b>{{key}}: </b>{{prop | json}}
+</div>

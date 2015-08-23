@@ -1,5 +1,7 @@
-pharzone.Api.state:
-<div ng-repeat="(key,state) in pharzone.Api.state"><b>{{key}}: </b>{{state}}</div><hr/>
+<b ng-show="$root.debug" ng-click="show.state = !show.state">pharzone.Api.state</b>
+<div ng-if="show.state">
+    <div ng-repeat="(key,state) in pharzone.Api.state"><b>{{key}}: </b>{{state}}</div><hr/>
+</div>
 <div data-top-bar>
     <ul class='title-area'>
         <li class='name'>
@@ -17,14 +19,37 @@ pharzone.Api.state:
     <div data-top-bar-section>
         <ul class='left'>
             <li ng-show="link.side==='left'" ng-repeat="link in pharzone.Api.models.nav" data-ui-sref-active='active'>
+                {{link.auth}}
                 <a data-ui-sref='{{link.state}}'>{{link.name | uppercase}}</a>
             </li>
         </ul>
         <ul class='right'>
             <li ng-show="link.side==='right'" ng-repeat="link in pharzone.Api.models.nav" data-ui-sref-active='active'>
+                {{link.auth}}
                 <a data-ui-sref='{{link.state}}' ng-click="link.action()">{{link.name | uppercase}}</a>
             </li>
         </ul>
     </div>
 </div>
 <ui-view></ui-view>
+<div ng-if="pharzone.Api.state.state.name === 'pharzone'">
+    <h1>Pharzone Pharmaceuticals</h1>
+    <div class="small-5 columns">
+        <b>Deals direct from the lab.</b>
+        <hr/>
+        <p>We know that pharmacies often have small margins because of high costs. We keep costs low with deals direct from the pharmaceutical companies.</p>
+    </div>
+    <div class="panel small-7 columns">
+        <div ng-if="!pharzone.Api.state.user.uid" >
+            <!--<ul class="button-group even">
+                <li><a ng-click="show.home = 'login'" ng-show="show.home === 'register'" class="button info">Login</a></li>
+                <li><a ng-click="show.home = 'register'" ng-show="show.home !== 'register'" class="button info">Register</a></li>
+            </ul>-->
+            <div chit="login" ng-show="show.home !== 'register'"></div>
+            <div chit="register" ng-show="show.home === 'register'"></div>
+            <a ng-click="show.home = 'login'" ng-show="show.home === 'register'" class="info">Back to login</a>
+            <a ng-click="show.home = 'register'" ng-show="show.home !== 'register'" class="info">Register a new account.</a>
+        </div>
+        <div ng-if="pharzone.Api.state.user.uid" chit="profile"></div>
+    </div>
+</div>
